@@ -1,102 +1,126 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform } from 'react-native';
+import React, { useContext } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { FontSize, color } from "../../GlobalStyles";
+import { Image } from "expo-image";
+import { SaveForLaterContext } from "../../contexts/SaveForLaterContext";
+import { translations } from "../../translations/main";
+import { Entypo } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedChapter } from "../../redux/slices/ChapterSlice";
+import { setSelectedVerse } from "../../redux/slices/VerseSlice";
+import { router } from "expo-router";
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Bookmarked() {
+  const theme = useSelector((state: any) => state.theme.theme);
+  const dispatch = useDispatch();
+  const { saveForLater } = useContext(SaveForLaterContext);
+  const language = useSelector((state: any) => state.settings.language);
+  const Color = color(theme);
 
-export default function Bookmark() {
+  const handleSetSelectedChapter = (chapter: any) => {
+    dispatch(setSelectedChapter(chapter));
+  };
+
+  const handleSetSelectedVerses = (verse: any) => {
+    dispatch(setSelectedVerse(verse));
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
-          to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <FlatList
+      data={["1"]}
+      renderItem={() => (
+        <View style={{ padding: 15 }}>
+          <Text
+            style={{
+              color: Color.fontPrim,
+              fontSize: FontSize.regular16px,
+              fontWeight: "700",
+            }}
+          >
+            Saved Verses
+          </Text>
+          <FlatList
+            data={saveForLater}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  handleSetSelectedVerses(item?.verseId);
+                  handleSetSelectedChapter(item?.chapterId);
+                  router.push("/verse");
+                }}
+                activeOpacity={0.7}
+                style={{
+                  paddingBottom: 4,
+                  borderBottomWidth: 1,
+                  borderColor: Color.borderColorSecondary,
+                  marginBottom: 16,
+                  width: "100%",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <View style={{ flexDirection: "row", gap: 14 }}>
+                    <Text
+                      style={{
+                        fontSize: FontSize.regular12px,
+                        color: Color.fontPrim,
+                        fontWeight: "600",
+                      }}
+                    >
+                      {translations.Verse[language]} {item.chapterId}.
+                      {item.verseId}
+                    </Text>
+                  </View>
+                  <Entypo name="chevron-small-right" size={24} color="black" />
+                </View>
+                <Text
+                  style={{
+                    marginTop: 10,
+                    fontSize: FontSize.regular12px,
+                    color: Color.fontPrim,
+                    fontWeight: "400",
+                  }}
+                >
+                  {item.verse}
+                </Text>
+              </TouchableOpacity>
+            )}
+            style={{
+              marginTop: 40,
+            }}
+          />
+
+          {saveForLater.length === 0 && (
+            <Text
+              style={{
+                color: Color.fontPrim,
+                fontSize: FontSize.regular12px,
+                fontWeight: "500",
+              }}
+            >
+              No Saved Verse
+            </Text>
+          )}
+        </View>
+      )}
+      style={{
+        backgroundColor: Color.backgroundColor,
+        paddingBottom: 50,
+        minHeight: Dimensions.get("window").height,
+      }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});

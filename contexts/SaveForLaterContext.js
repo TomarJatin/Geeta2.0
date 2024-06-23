@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from "react-native-simple-toast";
 // import FormData from "form-data";
 
 // Define the context

@@ -1,10 +1,9 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { icons } from "../styles/Icon";
 import { FontSize, color } from "../GlobalStyles";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { translations } from "../translations/main";
 import { Feather } from '@expo/vector-icons';
 
